@@ -9,37 +9,11 @@ export const libraryData = {
   },
 
   skills: {
-    programming: [
-      "Java",
-      "Python",
-      "C",
-      "JavaScript",
-    ],
-
-    frontend: [
-      "React",
-      "HTML",
-      "CSS",
-    ],
-
-    backend: [
-      "Spring Boot",
-      "J2EE",
-      "JDBC",
-      "REST APIs",
-    ],
-
-    database: [
-      "MySQL",
-    ],
-
-    other: [
-      "Git",
-      "GitHub",
-      "Embedded Systems",
-      "IoT",
-      "Machine Learning",
-    ],
+    programming: ["Java", "Python", "C", "JavaScript"],
+    frontend: ["React", "HTML", "CSS"],
+    backend: ["Spring Boot", "J2EE", "JDBC", "REST APIs"],
+    database: ["MySQL"],
+    other: ["Git", "GitHub", "Embedded Systems", "IoT", "Machine Learning"],
   },
 
   certifications: [
@@ -50,10 +24,4 @@ export const libraryData = {
     },
   ],
 
-  achievements: [
-    "Best Outgoing Student / Department Award",
-    "80+ LeetCode Problems",
-    "80+ MySQL Queries",
-    "Published Research Paper",
-  ],
 };

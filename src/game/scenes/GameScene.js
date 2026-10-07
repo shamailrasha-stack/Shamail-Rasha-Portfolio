@@ -7,7 +7,7 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     this.worldWidth = 2200;
-    this.worldHeight = 1400;
+    this.worldHeight = 1600;
 
     // =========================
     // QUEST SYSTEM
@@ -18,6 +18,7 @@ export default class GameScene extends Phaser.Scene {
       "AI OBSERVATORY": false,
       "EXPERIENCE": false,
       "LIBRARY": false,
+      "ACHIEVEMENT HALL": false,
     };
 
     this.questOrder = [
@@ -25,6 +26,7 @@ export default class GameScene extends Phaser.Scene {
       "AI OBSERVATORY",
       "EXPERIENCE",
       "LIBRARY",
+      "ACHIEVEMENT HALL",
     ];
 
     // =========================
@@ -74,6 +76,8 @@ export default class GameScene extends Phaser.Scene {
       500,
       260
     );
+
+    this.createGroundPatch(1100, 1390, 520, 300);
 
     // =========================
     // STARS
@@ -307,6 +311,16 @@ export default class GameScene extends Phaser.Scene {
       0x6d28d9
     );
 
+    this.createBuilding(
+      1100,
+      1390,
+      390,
+      220,
+      "ACHIEVEMENT HALL",
+      "Awards • Leadership • Research",
+      0xb45309
+    );
+
     // Interactive building halos + discovery badges
     this.buildingFX = {};
     [
@@ -314,6 +328,7 @@ export default class GameScene extends Phaser.Scene {
       [1700, 380, "AI OBSERVATORY"],
       [500, 1050, "EXPERIENCE"],
       [1700, 1050, "LIBRARY"],
+      [1100, 1390, "ACHIEVEMENT HALL"],
     ].forEach(([bx, by, name]) => {
       const halo = this.add.rectangle(bx, by, 390, 250, 0xc084fc, 0)
         .setStrokeStyle(3, 0xd8b4fe, 0)
@@ -338,6 +353,9 @@ export default class GameScene extends Phaser.Scene {
     this.createTree(1350, 300);
     this.createTree(850, 1100);
     this.createTree(1350, 1100);
+
+    this.createTree(950, 1480);
+    this.createTree(1250, 1480);
 
     this.createTree(300, 700);
     this.createTree(1900, 700);
@@ -1240,10 +1258,10 @@ export default class GameScene extends Phaser.Scene {
         -315,
         -55,
         "Welcome to Shamail Rasha's developer world.\n\n" +
-        "Explore four districts to discover projects, AI/IoT research,\n" +
-        "experience, skills and education.\n\n" +
+        "Explore five districts to discover projects, AI/IoT research,\n" +
+        "experience, skills, education and achievements.\n\n" +
         "Short on time? Use Fast Travel in the top-right dock.\n" +
-        "Discover all four districts to activate the Developer Core.",
+        "Discover all five districts to activate the Developer Core.",
         {
           fontFamily: "Arial",
           fontSize: "15px",
@@ -1358,7 +1376,7 @@ export default class GameScene extends Phaser.Scene {
     this.player.rotation = moving ? Math.sin(this.time.now / 90) * 0.035 : 0;
     if (this.player.glow) this.player.glow.setAlpha(moving ? 0.12 : 0.07);
 
-    // Developer Core interaction after all four areas are discovered
+    // Developer Core interaction after all five areas are discovered
     const coreDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, 1100, 700);
     if (this.coreUnlocked && coreDistance < 135) {
       this.corePrompt.setVisible(true);
@@ -1428,6 +1446,11 @@ export default class GameScene extends Phaser.Scene {
         x: 1700,
         y: 1050,
         name: "LIBRARY",
+      },
+      {
+        x: 1100,
+        y: 1390,
+        name: "ACHIEVEMENT HALL",
       },
     ];
 
@@ -1527,6 +1550,17 @@ export default class GameScene extends Phaser.Scene {
           window.dispatchEvent(
             new CustomEvent(
               "portfolio:openLibrary"
+            )
+          );
+        }
+
+        if (
+          nearest.name ===
+          "ACHIEVEMENT HALL"
+        ) {
+          window.dispatchEvent(
+            new CustomEvent(
+              "portfolio:openAchievementHall"
             )
           );
         }

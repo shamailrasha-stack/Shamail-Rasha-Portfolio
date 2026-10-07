@@ -15,7 +15,7 @@ function LibraryPanel({ onClose }) {
             <h1>THE LIBRARY</h1>
 
             <p className="library-subtitle">
-              Education • Skills • Certifications • Achievements
+              Education • Skills • Certifications
             </p>
           </div>
 
@@ -149,39 +149,6 @@ function LibraryPanel({ onClose }) {
                       {certificate.year}
                     </span>
                   </div>
-
-                </div>
-              )
-            )}
-
-          </div>
-
-        </section>
-
-        {/* ACHIEVEMENTS */}
-
-        <section className="library-section">
-
-          <p className="library-label">
-            ACHIEVEMENT ARCHIVE
-          </p>
-
-          <div className="achievement-list">
-
-            {libraryData.achievements.map(
-              (achievement, index) => (
-                <div
-                  className="achievement-item"
-                  key={`${achievement}-${index}`}
-                >
-
-                  <span className="achievement-icon">
-                    ◈
-                  </span>
-
-                  <span>
-                    {achievement}
-                  </span>
 
                 </div>
               )

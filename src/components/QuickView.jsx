@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { FolderKanban, BrainCircuit, BriefcaseBusiness, GraduationCap, X } from "lucide-react";
+import { FolderKanban, BrainCircuit, BriefcaseBusiness, GraduationCap, Trophy, X } from "lucide-react";
 
 const sections = [
   { key: "projects", title: "PROJECT LAB", note: "Full-stack & Java projects", Icon: FolderKanban },
   { key: "ai", title: "AI OBSERVATORY", note: "AI, ML, IoT & research", Icon: BrainCircuit },
   { key: "experience", title: "EXPERIENCE", note: "Internship & developer journey", Icon: BriefcaseBusiness },
-  { key: "library", title: "LIBRARY", note: "Skills, education & achievements", Icon: GraduationCap },
+  { key: "library", title: "LIBRARY", note: "Skills, education & certifications", Icon: GraduationCap },
+  { key: "achievements", title: "ACHIEVEMENT HALL", note: "Awards, leadership & research", Icon: Trophy },
   { key: "core", title: "DEVELOPER CORE", note: "30-second profile & contact", Icon: BrainCircuit },
 ];
 

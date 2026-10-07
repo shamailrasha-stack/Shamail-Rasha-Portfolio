@@ -16,7 +16,7 @@ export default function DeveloperCore({ onClose, onOpen }) {
           <div><strong>8.7</strong><span>CGPA</span></div>
           <div><strong>80+</strong><span>LeetCode</span></div>
           <div><strong>2025</strong><span>Published Research</span></div>
-          <div><strong>4</strong><span>World Districts</span></div>
+          <div><strong>5</strong><span>World Districts</span></div>
         </div>
         <div className="core-actions">
           <button onClick={() => onOpen('projects')}>VIEW PROJECTS</button>

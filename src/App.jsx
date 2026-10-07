@@ -8,6 +8,7 @@ import LibraryPanel from "./components/LibraryPanel";
 import QuickView from "./components/QuickView";
 import QuickDock from "./components/QuickDock";
 import DeveloperCore from "./components/DeveloperCore";
+import AchievementHall from "./components/AchievementHall";
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -23,6 +24,7 @@ function App() {
       "portfolio:openAIObservatory": () => openPanel("ai"),
       "portfolio:openExperience": () => openPanel("experience"),
       "portfolio:openLibrary": () => openPanel("library"),
+      "portfolio:openAchievementHall": () => openPanel("achievements"),
       "portfolio:openDeveloperCore": () => openPanel("core"),
     };
     Object.entries(handlers).forEach(([event, fn]) => window.addEventListener(event, fn));
@@ -66,6 +68,7 @@ function App() {
     {panel === "ai" && <AIObservatory onClose={closePanel}/>} 
     {panel === "experience" && <ExperiencePanel onClose={closePanel}/>} 
     {panel === "library" && <LibraryPanel onClose={closePanel}/>} 
+    {panel === "achievements" && <AchievementHall onClose={closePanel}/>} 
     {panel === "core" && <DeveloperCore onClose={closePanel} onOpen={openPanel}/>} 
   </div>;
 }
