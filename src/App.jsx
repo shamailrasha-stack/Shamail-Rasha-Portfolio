@@ -9,6 +9,7 @@ import QuickView from "./components/QuickView";
 import QuickDock from "./components/QuickDock";
 import DeveloperCore from "./components/DeveloperCore";
 import AchievementHall from "./components/AchievementHall";
+import MobileControls from "./components/MobileControls";
 
 function App() {
   const [started, setStarted] = useState(false);
@@ -63,6 +64,7 @@ function App() {
   return <div className="portfolio-world">
     <Game />
     <QuickDock onQuickView={() => setQuickView(true)} onProjects={() => openPanel("projects")} />
+    {!quickView && !panel && <MobileControls />}
     {quickView && <QuickView onClose={() => setQuickView(false)} onOpen={openPanel}/>} 
     {panel === "projects" && <ProjectModal onClose={closePanel}/>} 
     {panel === "ai" && <AIObservatory onClose={closePanel}/>} 

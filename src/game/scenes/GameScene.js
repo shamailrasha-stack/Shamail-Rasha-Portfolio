@@ -414,7 +414,7 @@ export default class GameScene extends Phaser.Scene {
       this.add.text(
         1100,
         485,
-        "PRESS E TO TALK",
+        this.sys.game.device.input.touch ? "TAP INTERACT TO TALK" : "PRESS E TO TALK",
         {
           fontFamily: "monospace",
           fontSize: "12px",
@@ -457,6 +457,29 @@ export default class GameScene extends Phaser.Scene {
         E: Phaser.Input.Keyboard.KeyCodes.E,
       });
 
+    // Touch controls are driven by the React mobile overlay.
+    this.mobileMove = { up: false, down: false, left: false, right: false };
+    this.mobileInteractQueued = false;
+
+    this.handleMobileControl = (event) => {
+      const { control, active } = event.detail || {};
+      if (Object.prototype.hasOwnProperty.call(this.mobileMove, control)) {
+        this.mobileMove[control] = Boolean(active);
+      }
+    };
+
+    this.handleMobileInteract = () => {
+      this.mobileInteractQueued = true;
+    };
+
+    window.addEventListener("portfolio:mobileControl", this.handleMobileControl);
+    window.addEventListener("portfolio:mobileInteract", this.handleMobileInteract);
+
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      window.removeEventListener("portfolio:mobileControl", this.handleMobileControl);
+      window.removeEventListener("portfolio:mobileInteract", this.handleMobileInteract);
+    });
+
     // =========================
     // CAMERA
     // =========================
@@ -483,7 +506,7 @@ export default class GameScene extends Phaser.Scene {
       this.add.text(
         0,
         0,
-        "PRESS E TO EXPLORE",
+        this.sys.game.device.input.touch ? "TAP INTERACT TO EXPLORE" : "PRESS E TO EXPLORE",
         {
           fontFamily: "monospace",
           fontSize: "16px",
@@ -503,7 +526,7 @@ export default class GameScene extends Phaser.Scene {
       .setVisible(false)
       .setDepth(100);
 
-    this.corePrompt = this.add.text(1100, 610, "E  •  ENTER DEVELOPER CORE", {
+    this.corePrompt = this.add.text(1100, 610, this.sys.game.device.input.touch ? "INTERACT  •  ENTER DEVELOPER CORE" : "E  •  ENTER DEVELOPER CORE", {
       fontFamily: "monospace", fontSize: "14px", color: "#ffffff",
       backgroundColor: "#5b21b6", padding: { left: 13, right: 13, top: 8, bottom: 8 }
     }).setOrigin(0.5).setDepth(120).setVisible(false);
@@ -555,7 +578,9 @@ export default class GameScene extends Phaser.Scene {
     this.ui = this.add.text(
       25,
       25,
-      "WASD / ARROWS  •  MOVE\nE  •  INTERACT",
+      this.sys.game.device.input.touch
+        ? "TOUCH CONTROLS  •  MOVE + INTERACT"
+        : "WASD / ARROWS  •  MOVE\nE  •  INTERACT",
       {
         fontFamily: "monospace",
         fontSize: "14px",
@@ -1224,8 +1249,8 @@ export default class GameScene extends Phaser.Scene {
       this.add.rectangle(
         0,
         0,
-        700,
-        230,
+        Math.min(700, this.scale.width - 32),
+        this.scale.width < 760 ? 330 : 230,
         0x100719,
         0.97
       );
@@ -1240,8 +1265,8 @@ export default class GameScene extends Phaser.Scene {
 
     const title =
       this.add.text(
-        -315,
-        -90,
+        -Math.min(315, (this.scale.width - 72) / 2),
+        this.scale.width < 760 ? -140 : -90,
         "✦ THE GUIDE",
         {
           fontFamily: "monospace",
@@ -1255,8 +1280,8 @@ export default class GameScene extends Phaser.Scene {
 
     const text =
       this.add.text(
-        -315,
-        -55,
+        -Math.min(315, (this.scale.width - 72) / 2),
+        this.scale.width < 760 ? -105 : -55,
         "Welcome to Shamail Rasha's developer world.\n\n" +
         "Explore five districts to discover projects, AI/IoT research,\n" +
         "experience, skills, education and achievements.\n\n" +
@@ -1267,6 +1292,7 @@ export default class GameScene extends Phaser.Scene {
           fontSize: "15px",
           color: "#ddd6fe",
           lineSpacing: 5,
+          wordWrap: { width: Math.min(630, this.scale.width - 72), useAdvancedWrap: true },
         }
       );
 
@@ -1274,9 +1300,9 @@ export default class GameScene extends Phaser.Scene {
 
     const close =
       this.add.text(
-        315,
-        90,
-        "[ PRESS E TO CLOSE ]",
+        Math.min(315, (this.scale.width - 72) / 2),
+        this.scale.width < 760 ? 140 : 90,
+        this.sys.game.device.input.touch ? "[ TAP INTERACT TO CLOSE ]" : "[ PRESS E TO CLOSE ]",
         {
           fontFamily: "monospace",
           fontSize: "11px",
@@ -1306,16 +1332,25 @@ export default class GameScene extends Phaser.Scene {
   }
 
   // =========================
+  // INPUT HELPERS
+  // =========================
+
+  consumeInteract() {
+    const keyboardInteract = Phaser.Input.Keyboard.JustDown(this.keys.E);
+    const mobileInteract = this.mobileInteractQueued;
+    this.mobileInteractQueued = false;
+    return keyboardInteract || mobileInteract;
+  }
+
+  // =========================
   // UPDATE
   // =========================
 
   update() {
+    const interactPressed = this.consumeInteract();
+
     if (this.dialogueOpen) {
-      if (
-        Phaser.Input.Keyboard.JustDown(
-          this.keys.E
-        )
-      ) {
+      if (interactPressed) {
         this.closeGuideDialogue();
       }
 
@@ -1327,7 +1362,8 @@ export default class GameScene extends Phaser.Scene {
 
     if (
       this.cursors.left.isDown ||
-      this.keys.A.isDown
+      this.keys.A.isDown ||
+      this.mobileMove.left
     ) {
       this.player.x -= speed;
       moving = true;
@@ -1336,7 +1372,8 @@ export default class GameScene extends Phaser.Scene {
 
     if (
       this.cursors.right.isDown ||
-      this.keys.D.isDown
+      this.keys.D.isDown ||
+      this.mobileMove.right
     ) {
       this.player.x += speed;
       moving = true;
@@ -1345,7 +1382,8 @@ export default class GameScene extends Phaser.Scene {
 
     if (
       this.cursors.up.isDown ||
-      this.keys.W.isDown
+      this.keys.W.isDown ||
+      this.mobileMove.up
     ) {
       this.player.y -= speed;
       moving = true;
@@ -1353,7 +1391,8 @@ export default class GameScene extends Phaser.Scene {
 
     if (
       this.cursors.down.isDown ||
-      this.keys.S.isDown
+      this.keys.S.isDown ||
+      this.mobileMove.down
     ) {
       this.player.y += speed;
       moving = true;
@@ -1380,7 +1419,7 @@ export default class GameScene extends Phaser.Scene {
     const coreDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, 1100, 700);
     if (this.coreUnlocked && coreDistance < 135) {
       this.corePrompt.setVisible(true);
-      if (Phaser.Input.Keyboard.JustDown(this.keys.E)) {
+      if (interactPressed) {
         window.dispatchEvent(new CustomEvent("portfolio:openDeveloperCore"));
         return;
       }
@@ -1409,11 +1448,7 @@ export default class GameScene extends Phaser.Scene {
         this.guide.y - 65
       );
 
-      if (
-        Phaser.Input.Keyboard.JustDown(
-          this.keys.E
-        )
-      ) {
+      if (interactPressed) {
         this.showGuideDialogue();
         return;
       }
@@ -1493,11 +1528,7 @@ export default class GameScene extends Phaser.Scene {
         this.player.y - 75
       );
 
-      if (
-        Phaser.Input.Keyboard.JustDown(
-          this.keys.E
-        )
-      ) {
+      if (interactPressed) {
         if (
           !this.quests[
             nearest.name
